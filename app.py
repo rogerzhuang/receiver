@@ -29,16 +29,13 @@ def submit_air_quality_data(body):
     """ Forwards air quality data to Kafka """
     trace_id = str(uuid.uuid4())
     logger.info("Received event air quality request with a trace id of %s", trace_id)
-    
     body['trace_id'] = trace_id
-    
     msg = {
         "type": "air_quality",
         "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "payload": body
     }
     producer.send(app_config['events']['topic'], value=msg)
-    
     logger.info("Returned event air quality response (Id: %s) with status 201", trace_id)
     return NoContent, 201
 
@@ -46,16 +43,13 @@ def submit_weather_data(body):
     """ Forwards weather data to Kafka """
     trace_id = str(uuid.uuid4())
     logger.info("Received event weather request with a trace id of %s", trace_id)
-    
     body['trace_id'] = trace_id
-    
     msg = {
         "type": "weather",
         "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "payload": body
     }
     producer.send(app_config['events']['topic'], value=msg)
-    
     logger.info("Returned event weather response (Id: %s) with status 201", trace_id)
     return NoContent, 201
 
