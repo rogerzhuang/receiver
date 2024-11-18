@@ -1,17 +1,20 @@
-import connexion
-from connexion import NoContent
-import logging
-import logging.config
-import yaml
-import uuid
+"""Receiver service for processing air quality and weather data through Kafka"""
+
 import datetime
 import json
+import logging
+import logging.config
+import uuid
+
+import connexion
+from connexion import NoContent
+import yaml
 from kafka import KafkaProducer
 
-with open('app_config.yml', 'r') as f:
+with open('app_config.yml', 'r', encoding='utf-8') as f:
     app_config = yaml.safe_load(f.read())
 
-with open('log_config.yml', 'r') as f:
+with open('log_config.yml', 'r', encoding='utf-8') as f:
     log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
 
@@ -25,7 +28,7 @@ producer = KafkaProducer(
 def submit_air_quality_data(body):
     """ Forwards air quality data to Kafka """
     trace_id = str(uuid.uuid4())
-    logger.info(f"Received event air quality request with a trace id of {trace_id}")
+    logger.info("Received event air quality request with a trace id of %s", trace_id)
     
     body['trace_id'] = trace_id
     
@@ -36,13 +39,13 @@ def submit_air_quality_data(body):
     }
     producer.send(app_config['events']['topic'], value=msg)
     
-    logger.info(f"Returned event air quality response (Id: {trace_id}) with status 201")
+    logger.info("Returned event air quality response (Id: %s) with status 201", trace_id)
     return NoContent, 201
 
 def submit_weather_data(body):
     """ Forwards weather data to Kafka """
     trace_id = str(uuid.uuid4())
-    logger.info(f"Received event weather request with a trace id of {trace_id}")
+    logger.info("Received event weather request with a trace id of %s", trace_id)
     
     body['trace_id'] = trace_id
     
@@ -53,7 +56,7 @@ def submit_weather_data(body):
     }
     producer.send(app_config['events']['topic'], value=msg)
     
-    logger.info(f"Returned event weather response (Id: {trace_id}) with status 201")
+    logger.info("Returned event weather response (Id: %s) with status 201", trace_id)
     return NoContent, 201
 
 app = connexion.FlaskApp(__name__, specification_dir='')
