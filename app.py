@@ -1,4 +1,4 @@
-"""Receiver service for processing air quality and weather data through Kafka"""
+"""Receiver service for processing air quality and weather data through Kafka!"""
 
 import datetime
 import json
